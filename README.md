@@ -12,6 +12,8 @@ Observe is designed to be runnable in the free tier of Google Cloud; right now
 it only supports BigQuery as a storage backend, and is intended to be run under
 AppEngine. It also has a standalone server which can be run anywhere.
 
+**Warning:** This is alpha software; it's not actually run anywhere yet.
+
 ## Running
 
 Create a BigQuery table with the following schema; observe cannot yet create
