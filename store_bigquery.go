@@ -9,15 +9,20 @@ import (
 	"cloud.google.com/go/bigquery"
 )
 
-type BigQueryOptions struct{}
+type BigQueryOptions struct {
+	Context context.Context
+}
 
 func NewBigQuery(projectID, tableName string, opts *BigQueryOptions) (*BigQuery, error) {
 	if opts == nil {
 		opts = &BigQueryOptions{}
 	}
 
-	ctx := context.Background()
-	client, err := bigquery.NewClient(ctx, projectID)
+	if opts.Context == nil {
+		opts.Context = context.Background()
+	}
+
+	client, err := bigquery.NewClient(opts.Context, projectID)
 	if err != nil {
 		return nil, err
 	}

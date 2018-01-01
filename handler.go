@@ -27,6 +27,12 @@ type Handler struct {
 }
 
 func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+
+	h.HandleWithContext(ctx, w, r)
+}
+
+func (h *Handler) HandleWithContext(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	if h.options.ServerHeader != "" {
 		w.Header().Set("server", h.options.ServerHeader)
 	}
@@ -51,9 +57,9 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.store.Store(context.Background(), o); err != nil {
+	if err := h.store.Store(ctx, o); err != nil {
 		log.Printf("unable to store observation: %v", err)
 	}
 
-	log.Printf("observed %v: %v", o.RemoteAddr, o.URL)
+	log.Printf("observed %v, %v", o.RemoteAddr, o.URL)
 }

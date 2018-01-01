@@ -1,0 +1,11 @@
+runtime: go
+api_version: go1
+
+instance_class: B1
+basic_scaling:
+  idle_timeout: 5m
+  max_instances: 2
+
+handlers:
+- url: /.*
+  script: _go_app
