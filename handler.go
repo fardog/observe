@@ -56,6 +56,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 	// if the user does not wish to be tracked, abort
 	if r.Header.Get("DNT") == "1" {
 		log.Info("not observed; user does not wish to be tracked")
+		return
 	}
 
 	go func() {
