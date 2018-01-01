@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"math/rand"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,18 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
-
 	"github.com/fardog/observe"
 )
 
 var (
-	logLevel = flag.String(
-		"level",
-		"info",
-		"Log level, one of: debug, info, warn, error, fatal, panic",
-	)
-
 	listenAddress = flag.String(
 		"listen", ":80", "listen address, as `[host]:port`",
 	)
@@ -60,12 +52,12 @@ func serve(server *http.Server) {
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig
 
-	log.Infoln("shutting down on interrupt")
+	log.Println("shutting down on interrupt")
 	timeout := time.Duration(*shutdownTimeout) * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		log.Errorf("got unexpected error %s", err.Error())
+		log.Printf("got unexpected error %s", err.Error())
 	}
 
 	<-ctx.Done()
@@ -79,17 +71,6 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
-
-	// seed the global random number generator, used in some utilities and the
-	// google provider
-	rand.Seed(time.Now().UTC().UnixNano())
-
-	// set the loglevel
-	level, err := log.ParseLevel(*logLevel)
-	if err != nil {
-		log.Fatalf("invalid log level: %s", err.Error())
-	}
-	log.SetLevel(level)
 
 	opts := &observe.BigQueryOptions{}
 	store, err := observe.NewBigQuery(*gcloudProject, *bigQueryTable, opts)
@@ -115,8 +96,8 @@ func main() {
 		servers <- true
 	}()
 
-	log.Infof("server started on %v", *listenAddress)
+	log.Printf("server started on %v", *listenAddress)
 	<-servers
-	log.Infoln("servers exited, stopping")
+	log.Println("servers exited, stopping")
 
 }

@@ -1,10 +1,9 @@
 package observe
 
 import (
+	"context"
+	"log"
 	"net/http"
-	"time"
-
-	log "github.com/Sirupsen/logrus"
 )
 
 type HandlerOptions struct {
@@ -35,18 +34,11 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Pragma", "no-cache")
 	w.Header().Set("Expires", "0")
 
-	referrer := r.Referer()
-	// if referrer is passed in url string, prefer that
-	q := r.URL.Query()
-	if r := q.Get("referrer"); r != "" {
-		referrer = r
-	}
-
-	o := &Observation{
-		URL:        referrer,
-		RemoteAddr: r.RemoteAddr,
-		Observed:   time.Now(),
-		Header:     r.Header,
+	o, err := NewObservation(r)
+	if err != nil {
+		log.Printf("unable to create observation from request: %v", err)
+		w.WriteHeader(500)
+		return
 	}
 
 	w.WriteHeader(200)
@@ -55,18 +47,13 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	// if the user does not wish to be tracked, abort
 	if r.Header.Get("DNT") == "1" {
-		log.Info("not observed; user does not wish to be tracked")
+		log.Println("not observed; user does not wish to be tracked")
 		return
 	}
 
-	go func() {
-		if err := h.store.Store(o); err != nil {
-			log.Errorf("unable to store observation: %v", err)
-		}
-	}()
+	if err := h.store.Store(context.Background(), o); err != nil {
+		log.Printf("unable to store observation: %v", err)
+	}
 
-	log.WithFields(log.Fields{
-		"RemoteAddr": o.RemoteAddr,
-		"URL":        o.URL,
-	}).Info("observed")
+	log.Printf("observed %v: %v", o.RemoteAddr, o.URL)
 }

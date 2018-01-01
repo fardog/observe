@@ -44,9 +44,9 @@ type BigQuery struct {
 	table   *bigquery.Table
 }
 
-func (b *BigQuery) Store(o *Observation) error {
+func (b *BigQuery) Store(ctx context.Context, o *Observation) error {
 	u := b.table.Uploader()
-	err := u.Put(context.Background(), []*value{valueFromObservation(o)})
+	err := u.Put(ctx, []*value{valueFromObservation(o)})
 
 	return err
 }
