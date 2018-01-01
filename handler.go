@@ -49,6 +49,15 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		Header:     r.Header,
 	}
 
+	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "image/gif")
+	w.Write([]byte(TransparentGIF))
+
+	// if the user does not wish to be tracked, abort
+	if r.Header.Get("DNT") == "1" {
+		log.Info("not observed; user does not wish to be tracked")
+	}
+
 	go func() {
 		if err := h.store.Store(o); err != nil {
 			log.Errorf("unable to store observation: %v", err)
@@ -59,8 +68,4 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		"RemoteAddr": o.RemoteAddr,
 		"URL":        o.URL,
 	}).Info("observed")
-
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "image/gif")
-	w.Write([]byte(TransparentGIF))
 }

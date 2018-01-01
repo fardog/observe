@@ -47,6 +47,10 @@ will be written to BigQuery with the following:
 You may also manually specify the URL visited, if you don't want to rely on the
 referrer headers: `/observe.gif?referrer=https://cool.site/awesome-page/`
 
+Observe respects the [Do Not Track][DNT] header, and will serve the gif to the
+requester but not log or store their information. There is no option to disable
+this behavior.
+
 ## TODO
 
 * Attempt to create schema if not present
@@ -56,3 +60,5 @@ referrer headers: `/observe.gif?referrer=https://cool.site/awesome-page/`
 ## License
 
 [MIT](./LICENSE)
+
+[DNT]: https://en.wikipedia.org/wiki/Do_Not_Track
