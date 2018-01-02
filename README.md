@@ -42,7 +42,7 @@ transparent GIF image: `/observe.gif`. Whenver that image is loaded, an entry
 will be written to BigQuery with the following:
 
 * The URL visited (taken from the Referrer headers)
-* The IP address of the viewer
+* The anonymized IP address of the viewer (IPv4 to 20 bits, IPv6 to 32 bits)
 * The time observed
 * A list of all header values the browser sent
 
@@ -58,6 +58,7 @@ this behavior.
 * Attempt to create schema if not present
 * Figure out if there's a decent way to distribute the schema with this app
 * Document running on AppEngine
+* Tests
 
 ## License
 

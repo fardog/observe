@@ -14,9 +14,14 @@ func NewObservation(r *http.Request) (*Observation, error) {
 		referrer = r
 	}
 
+	remote, err := AnonymizeIP(r.RemoteAddr)
+	if err != nil {
+		remote = r.RemoteAddr
+	}
+
 	return &Observation{
 		URL:        referrer,
-		RemoteAddr: r.RemoteAddr,
+		RemoteAddr: remote,
 		Observed:   time.Now(),
 		Header:     r.Header,
 	}, nil
