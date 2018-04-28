@@ -16,24 +16,23 @@ AppEngine. It also has a standalone server which can be run anywhere.
 
 ## Running
 
-Create a BigQuery table with the following schema; observe cannot yet create
-its own:
-
-| Field          | Type      | Attributes |
-|----------------|-----------|------------|
-| URL            | STRING    | NULLABLE   |
-| RemoteAddr     | STRING    | REQUIRED   |
-| Observed       | TIMESTAMP | REQUIRED   |
-| Header         | RECORD    | REPEATED   |
-| _Header_.Key   | STRING    | REQUIRED   |
-| _Header_.Value | STRING    | REPEATED   |
+Create a BigQuery table with [provided schema][schema]; observe cannot yet
+create its own:
 
 ```bash
+# get the code
 go get -u github.com/fardog/observe/cmd/observe
-observer -gcloud-project-id my-project -bigquery-table observe.observations
+# create the schema
+bq mk --table --description 'Observed visits' \
+  --time_partitioning_field=Observed \
+  --time_partitioning_expiration 7776000 \
+  <gcloud_project_name>:observe.observations \
+  $GOPATH/src/github.com/fardog/observe/bq-schema.json
+# run the observer
+observe -gcloud-project-id my-project -bigquery-table observe.observations
 ```
 
-You may run `observer -help` to view all options.
+You may run `observe -help` to view all options.
 
 ## Usage
 
@@ -65,3 +64,4 @@ this behavior.
 [MIT](./LICENSE)
 
 [DNT]: https://en.wikipedia.org/wiki/Do_Not_Track
+[schema]: ./bq-schema.json

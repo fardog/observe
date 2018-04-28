@@ -1,0 +1,40 @@
+[
+  {
+    "description": "Referrer URL", 
+    "mode": "NULLABLE", 
+    "name": "URL", 
+    "type": "STRING"
+  }, 
+  {
+    "description": "Remote address, anonymized", 
+    "mode": "REQUIRED", 
+    "name": "RemoteAddr", 
+    "type": "STRING"
+  }, 
+  {
+    "description": "Timestamp at which the observation was recorded", 
+    "mode": "REQUIRED", 
+    "name": "Observed", 
+    "type": "TIMESTAMP"
+  }, 
+  {
+    "description": "Browser headers received", 
+    "fields": [
+      {
+        "description": "Header name", 
+        "mode": "REQUIRED", 
+        "name": "Key", 
+        "type": "STRING"
+      }, 
+      {
+        "description": "Header values", 
+        "mode": "REPEATED", 
+        "name": "Value", 
+        "type": "STRING"
+      }
+    ], 
+    "mode": "REPEATED", 
+    "name": "Header", 
+    "type": "RECORD"
+  }
+]
