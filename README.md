@@ -29,7 +29,7 @@ bq mk --table --description 'Observed visits' \
   <gcloud_project_name>:observe.observations \
   $GOPATH/src/github.com/fardog/observe/bq-schema.json
 # run the observer
-observe -gcloud-project-id my-project -bigquery-table observe.observations
+observe -gcloud-project-id <gcloud_project_name> -bigquery-table observe.observations
 ```
 
 You may run `observe -help` to view all options.
@@ -55,7 +55,6 @@ this behavior.
 ## TODO
 
 * Attempt to create schema if not present
-* Figure out if there's a decent way to distribute the schema with this app
 * Document running on AppEngine
 * Tests
 
