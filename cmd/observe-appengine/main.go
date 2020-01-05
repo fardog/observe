@@ -9,13 +9,25 @@ import (
 	"github.com/fardog/observe"
 )
 
-func main() {
-	resp, err := http.Get("http://metadata.google.internal/computeMetadata/v1/project/project-id")
+func getProjectID() (string, error) {
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", "http://metadata.google.internal/computeMetadata/v1/project/project-id", nil)
+	req.Header.Set("Metadata-Flavor", "Google")
+	res, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Unable to retrieve project id", err)
+		return "", err
 	}
-	defer resp.Body.Close()
-	projectID, err := ioutil.ReadAll(resp.Body)
+	defer res.Body.Close()
+	projectID, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(projectID), nil
+}
+
+func main() {
+	projectID, err := getProjectID()
 	if err != nil {
 		log.Fatal("Could not read project id", err)
 	}
