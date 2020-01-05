@@ -14,7 +14,7 @@ func NewObservation(r *http.Request) (*Observation, error) {
 		referrer = r
 	}
 
-	remote, err := AnonymizeIP(r.RemoteAddr)
+	remote, err := GetAnonymizedIP(r)
 	if err != nil {
 		remote = r.RemoteAddr
 	}

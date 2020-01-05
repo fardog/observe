@@ -3,6 +3,8 @@ package observe
 import (
 	"errors"
 	"net"
+	"net/http"
+	"strings"
 )
 
 var (
@@ -32,4 +34,16 @@ func AnonymizeIP(remoteAddr string) (string, error) {
 	}
 
 	return ip.Mask(mask).String(), nil
+}
+
+func GetAnonymizedIP(req *http.Request) (string, error) {
+	ip := req.RemoteAddr
+	fwd := req.Header.Get("X-Forwarded-For")
+
+	if fwd != "" {
+		ips := strings.Split(fwd, ", ")
+		ip = ips[0]
+	}
+
+	return AnonymizeIP(ip)
 }
