@@ -10,9 +10,10 @@ a situation where:
 
 Observe is designed to be runnable in the free tier of Google Cloud; right now
 it only supports BigQuery as a storage backend, and is intended to be run under
-AppEngine. It also has a standalone server which can be run anywhere.
+App Engine. It also has a standalone server which can be run anywhere.
 
-**Warning:** This is alpha software; it's not actually run anywhere yet.
+**Warning:** This is alpha software; it's really only written for my use case.
+If your use case and mine are similar, it will might work for you!
 
 ## Running
 
@@ -52,10 +53,16 @@ Observe respects the [Do Not Track][DNT] header, and will serve the gif to the
 requester but not log or store their information. There is no option to disable
 this behavior.
 
+## Running on App Engine
+
+Observe was designed to run on Google Cloud App Engine, or as a standalone
+server. Running on App Engine should involve only a `gcloud app deploy` from
+within the `cmd/observe-appengine` directory with a properly configured Google
+Cloud SDK.
+
 ## TODO
 
 * Attempt to create schema if not present
-* Document running on AppEngine
 * Tests
 
 ## License
